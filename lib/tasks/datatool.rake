@@ -44,7 +44,7 @@ namespace :datatool do
     data_hash.each do |s|
       puts "restoring " + s["id"]
       new_summary = Summary.new
-      
+      # copy all attributes from json to new summary
 
       break
     end
