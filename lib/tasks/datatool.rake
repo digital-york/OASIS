@@ -50,10 +50,10 @@ namespace :datatool do
         Summary.find(id)
         # If found
         existing_summaries << id
-        #puts '>>Already exist: ' + id
         next
       rescue
         # Not found, then create a new Summary as below
+        # TODO?: May provide an additional parameter, e.g. overwrite means overwrite existing Summary metadata if exists
       end
 
       puts "restoring " + id
@@ -65,13 +65,17 @@ namespace :datatool do
             if s[name].class!=Array
               new_summary.send("#{name}=",Time.parse(s[name]))
             end
+          #elsif name!='access_control_id'
+          # TODO: check if access_control_id from previous Summary can be reused in the new summary
           else
-            new_summary.send("#{name}=",s[name])
+            new_summary.send("#{name}=",s[name]) unless s[name].nil?
           end
         end
       end
       new_summary.id    = id
+      # TODO: check if the state is inactive, are there anything else to be modified?
       new_summary.state = ActiveTriples::Resource.new(s['state']['id']) unless s['state'].nil? or s['state']['id'].nil?
+      #new_summary.state = ActiveTriples::Resource.new("http://fedora.info/definitions/1/0/access/ObjState#active")
       new_summary.save
     end
 
